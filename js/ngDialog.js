@@ -649,6 +649,75 @@
 
                             dialogsCount += 1;
 
+                            ////DGRAGGABLE BEGIN
+                            if (true) {
+                                var elHeader = getElemByClass($dialog, 'header');
+                                var elDialogContent = getElemByClass($dialog, 'ngdialog-content');
+                                if (elHeader && elHeader != null && elDialogContent && elDialogContent != null) {
+                                    console.log($dialog);
+                                    var startX = 0, startY = 0;
+                                    var x = 0, y = 0;
+
+                                    console.log(elDialogContent);
+
+                                    elDialogContent.css({
+                                        position: 'relative'
+                                    });
+
+                                    elHeader.css({
+                                        cursor: 'move' //'pointer' 
+                                    });
+
+                                    elHeader.on('mousedown', function (event) {
+                                        //Prevent default dragging of selected content.
+                                        //Not used here since this disables input fields.
+                                        //event.preventDefault();
+                                        startX = event.screenX - x;
+                                        startY = event.screenY - y;
+                                        $document.on('mousemove', mousemove);
+                                        $document.on('mouseup', mouseup);
+                                    });
+
+                                    function mousemove(ev) {
+                                        //Flag passed from input elements: ng-focus="setDrag(true)" ng-blur="setDrag(false)".
+                                        y = ev.screenY - startY;
+                                        x = ev.screenX - startX;
+                                        elDialogContent.css({
+                                            top: y + 'px',
+                                            left: x + 'px'
+                                        });
+                                        //element[0].focus();
+
+                                        //Flag set for disabling vertical re-center after any dragging.
+                                        //hasDragged = true;
+
+                                        //Disable element/text selection.
+                                        window.getSelection().removeAllRanges();
+                                    }
+
+                                    function mouseup(ev) {
+                                        $document.unbind('mousemove', mousemove);
+                                        $document.unbind('mouseup', mouseup);
+                                    }
+                                }
+
+                                function getElemByClass(elem, headerClass) {
+                                    var elHeader = null;
+                                    if (elem && elem != null) {
+                                        var divList = angular.element(elem.find('div'));
+                                        if (divList && divList != null) {
+                                            for (var i = 0; i < divList.length; i++) {
+                                                if (angular.element(divList[i]).hasClass(headerClass))
+                                                    elHeader = angular.element(divList[i]);
+                                            }
+                                        }
+                                    }
+
+                                    return elHeader;
+                                }
+                            }
+
+
                             return publicMethods;
                         });
 
