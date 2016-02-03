@@ -54,6 +54,8 @@
             cache: true,
             trapFocus: true,
             preserveFocus: true,
+            tooltip: false,
+            mouseEvent: null,
             ariaAuto: true,
             ariaRole: null,
             ariaLabelledById: null,
@@ -647,6 +649,19 @@
                                 $dialog.bind('click', closeByDocumentHandler);
                             }
 
+                            if (options.tooltip && options.mouseEvent!==null) {
+                                var elDialogContent = getByClass($dialog, 'ngdialog-content');
+
+                                if (elDialogContent !== null) {
+                                    console.log('clientX: ' + options.mouseEvent.clientX + ' clientY: ' + options.mouseEvent.clientY);
+                                    console.log('layerX: ' + options.mouseEvent.layerX + ' layerY: ' + options.mouseEvent.layerY);
+                                    console.log('offsetX: ' + options.mouseEvent.offsetX + ' offsetY: ' + options.mouseEvent.offsetY);
+                                    console.log('pageX: ' + options.mouseEvent.pageX + ' pageY: ' + options.mouseEvent.pageY);
+                                    console.log('screenX: ' + options.mouseEvent.screenX + ' screenY: ' + options.mouseEvent.screenY);
+                                    console.log('x: ' + options.mouseEvent.x + ' y: ' + options.mouseEvent.y);                                    
+                                }
+                            }
+
                             dialogsCount += 1;
 
                             return publicMethods;
@@ -682,6 +697,20 @@
                             }
 
                             return loadTemplateUrl(tmpl, {cache: $templateCache});
+                        }
+
+                        function getByClass(elem, className) {
+                            var elemWithClass = null;
+                            if (elem !== null) {
+                                var divList = $el(elem.find('div'));
+                                if (divList !== null) {
+                                    for (var i = 0; i < divList.length; i++) {
+                                        if ($el(divList[i]).hasClass(className))
+                                            elemWithClass = $el(divList[i]);
+                                    }
+                                }
+                            }
+                            return elemWithClass;
                         }
                     },
 
