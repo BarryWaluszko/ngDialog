@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html ng-app="exampleDialog">
 <head>
     <meta charset="utf-8">
@@ -46,8 +46,10 @@
         ng-dialog-controller="InsideCtrl"
         ng-dialog-data="{{jsonData}}"
         ng-dialog-class="ngdialog-theme-default"
-        ng-dialog-show-close="false">Open via directive</button>
-    <a href="" ng-click="openDefault()">Default theme</a>
+        ng-dialog-show-close="false"
+        ng-dialog-tooltip="true">Open via directive</button>
+    <a href="#" ng-click="openDraggableTooltip($event)">Open draggable tooltip</a>
+    <a href="" ng-click="openDefault($event)">Default theme</a>
     <a href="" ng-click="openDefaultWithoutAnimation()">Default theme without animation</a>
     <a href="" ng-click="openPlain()">Plain theme</a>
     <a href="" ng-click="openPlainCustomWidth()">Plain theme with custom width</a>
@@ -71,7 +73,28 @@
     <a href="" ng-click="openConfirmWithPreCloseCallbackInlinedWithNestedConfirm()">Open confirm modal with pre-close inlined with nested confirm.</a>
     <a href="" ng-click="openWithoutOverlay()">Open without overlay</a>
 
-    <!-- Templates -->
+    <!-- Templates -->    
+    <script type="text/ng-template" id="myTooltip">
+        <div class="ngdialog-message">
+            <h3>ngDialog template</h3>
+            <p ng-show="theme">Test content for <code>{{theme}}</code></p>
+            <p ng-show="ngDialogId">Dialog Id: <code>{{ngDialogId}}</code></p>
+            <p class="data-passed-through" ng-show="ngDialogData.foo">Data passed through: <code>{{ngDialogData.foo}}</code></p>
+            <p ng-show="dialogModel.message">Scope passed through: <code>{{dialogModel.message}}</code></p>
+            <p>Close this dialog: <button class="inline close-this-dialog" ng-click="closeThisDialog()">Close</button></p>
+
+        </div>
+        <div class="ngdialog-buttons">
+            <button type="button" class="ngdialog-button ngdialog-button-secondary"
+                    ng-dialog="secondDialogId"
+                    ng-dialog-class="ngdialog-theme-default"
+                    ng-dialog-controller="SecondModalCtrl"
+                    ng-dialog-close-previous>
+                Close and open
+            </button>
+            <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="openSecond()">Open next</button>
+        </div>
+    </script>
 
     <script type="text/ng-template" id="firstDialogId">
         <div class="ngdialog-message">
@@ -193,12 +216,27 @@
                     console.log(ngDialog.isOpen(new_dialog.id));
                 }, 2000)
             };
+            
+            $scope.openDraggableTooltip = function (event) {
+                ngDialog.open({
+                    template: 'myTooltip',
+                    controller: 'InsideCtrl',
+                    className: 'ngdialog-theme-default',
+                    tooltip: true,
+                    mouseEvent: event,
+                    overlay: false,
+                    draggable: true
+                });
+            };
 
-            $scope.openDefault = function () {
+            $scope.openDefault = function (event) {                
                 ngDialog.open({
                     template: 'firstDialogId',
                     controller: 'InsideCtrl',
-                    className: 'ngdialog-theme-default'
+                    className: 'ngdialog-theme-default',
+                    tooltip: false,
+                    mouseEvent: event,
+                    overlay: false
                 });
             };
 

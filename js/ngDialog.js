@@ -55,6 +55,8 @@
             trapFocus: true,
             preserveFocus: true,
             draggable: false,
+            tooltip: false,
+            mouseEvent: null,
             ariaAuto: true,
             ariaRole: null,
             ariaLabelledById: null,
@@ -465,6 +467,8 @@
                      * - closeByDocument {Boolean} - default true
                      * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set)
                      * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled)
+                     * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
+                     * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
                      * @return {Object} dialog
                      */
                     open: function (opts) {
@@ -659,6 +663,17 @@
                             } else {
                                 $dialog.bind('click', closeByDocumentHandler);
                             }
+                            if (options.tooltip && options.mouseEvent!==null) {
+                                var elDialogContent = getByClass($dialog, 'ngdialog-content');
+                                if (elDialogContent !== null) {
+                                    //set new position for the ngDialog (tooltip)
+                                    elDialogContent.css({
+                                        top: options.mouseEvent.pageY + 'px',
+                                        left: options.mouseEvent.pageX + 'px',
+                                        position: 'absolute'
+                                    });
+                                }
+                            }
 
                             dialogsCount += 1;
 
@@ -675,17 +690,20 @@
                                     elHeader.on('mousedown', function (event) {                                       
                                         startX = event.screenX - x;
                                         startY = event.screenY - y;
+                                        console.log(startX);
                                         $document.on('mousemove', mousemove);
                                         $document.on('mouseup', mouseup);
                                     });
 
-                                    function mousemove(ev) {           
+                                    function mousemove(ev) {
+                                        console.log(startX);
                                         y = ev.screenY - startY;
                                         x = ev.screenX - startX;
                                         elDialogContent.css({
                                             top: y + 'px',
                                             left: x + 'px'
-                                        });                                       
+                                        });
+                                        //console.log(x + 'px');
                                         window.getSelection().removeAllRanges();
                                     }
 
@@ -760,6 +778,8 @@
                      * - closeByEscape {Boolean} - default false
                      * - closeByDocument {Boolean} - default false
                      * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set); not called on confirm
+                     * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
+                     * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
                      *
                      * @return {Object} dialog
                      */
@@ -863,7 +883,6 @@
             link: function (scope, elem, attrs) {
                 elem.on('click', function (e) {
                     e.preventDefault();
-
                     var ngDialogScope = angular.isDefined(scope.ngDialogScope) ? scope.ngDialogScope : 'noScope';
                     angular.isDefined(attrs.ngDialogClosePrevious) && ngDialog.close(attrs.ngDialogClosePrevious);
 
@@ -881,6 +900,8 @@
                         closeByDocument: attrs.ngDialogCloseByDocument === 'false' ? false : (attrs.ngDialogCloseByDocument === 'true' ? true : defaults.closeByDocument),
                         closeByEscape: attrs.ngDialogCloseByEscape === 'false' ? false : (attrs.ngDialogCloseByEscape === 'true' ? true : defaults.closeByEscape),
                         overlay: attrs.ngDialogOverlay === 'false' ? false : (attrs.ngDialogOverlay === 'true' ? true : defaults.overlay),
+                        tooltip: attrs.ngDialogTooltip === 'false' ? false : (attrs.ngDialogTooltip === 'true' ? true : defaults.tooltip),
+                        mouseEvent: attrs.ngDialogTooltip === 'false' ? null : e,
                         preCloseCallback: attrs.ngDialogPreCloseCallback || defaults.preCloseCallback
                     });
                 });
