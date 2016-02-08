@@ -54,6 +54,7 @@
             cache: true,
             trapFocus: true,
             preserveFocus: true,
+            draggable: false,
             ariaAuto: true,
             ariaRole: null,
             ariaLabelledById: null,
@@ -440,6 +441,10 @@
                             return '$stateChangeSuccess';
                         }
                         return '$locationChangeSuccess';
+                    },
+
+                    dragClassName: function () {
+                        return 'drag-header';
                     }
                 };
 
@@ -459,6 +464,7 @@
                      * - closeByEscape {Boolean} - default true
                      * - closeByDocument {Boolean} - default true
                      * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set)
+                     * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled)
                      * @return {Object} dialog
                      */
                     open: function (opts) {
@@ -501,7 +507,14 @@
                             if (options.showClose) {
                                 template += '<div class="ngdialog-close"></div>';
                             }
-
+                            
+                            //if draggable functionality is enabled
+                            if (options.draggable) {
+                                //check if template contains draggable container (like: <div class='header'></div>)
+                                var hasContainer = getByClass($el(template), privateMethods.dragClassName());                                
+                                if(hasContainer===null)
+                                    template = '<div class="' + privateMethods.dragClassName()  + '">Drag me</div>' + template; //add draggable container
+                            }
                             var hasOverlayClass = options.overlay ? '' : ' ngdialog-no-overlay';
                             $dialog = $el('<div id="'+dialogID + '" class="ngdialog' + hasOverlayClass + '"></div>');
                             $dialog.html((options.overlay ?
@@ -649,6 +662,41 @@
 
                             dialogsCount += 1;
 
+                            if (options.draggable) {
+                                var elHeader = getByClass($dialog, privateMethods.dragClassName()); //check if in template already exist element that will be used to drag
+                                var elDialogContent = getByClass($dialog, 'ngdialog-content');
+                                if (elHeader !== null && elDialogContent !== null) {
+                                    var startX = 0, startY = 0;
+                                    var x = 0, y = 0;
+                                    elHeader.css({
+                                        cursor: 'move' //'pointer' 
+                                    });
+
+                                    elHeader.on('mousedown', function (event) {                                       
+                                        startX = event.screenX - x;
+                                        startY = event.screenY - y;
+                                        $document.on('mousemove', mousemove);
+                                        $document.on('mouseup', mouseup);
+                                    });
+
+                                    function mousemove(ev) {           
+                                        y = ev.screenY - startY;
+                                        x = ev.screenX - startX;
+                                        elDialogContent.css({
+                                            top: y + 'px',
+                                            left: x + 'px'
+                                        });                                       
+                                        window.getSelection().removeAllRanges();
+                                    }
+
+                                    function mouseup(ev) {
+                                        $document.unbind('mousemove', mousemove);
+                                        $document.unbind('mouseup', mouseup);
+                                    }
+                                }
+                            }
+
+
                             return publicMethods;
                         });
 
@@ -682,6 +730,20 @@
                             }
 
                             return loadTemplateUrl(tmpl, {cache: $templateCache});
+                        }
+
+                        function getByClass(elem, className) {
+                            var elemWithClass = null;
+                            if (elem !== null) {
+                                var divList = $el(elem.find('div'));
+                                if (divList !== null) {
+                                    for (var i = 0; i < divList.length; i++) {
+                                        if ($el(divList[i]).hasClass(className))
+                                            elemWithClass = $el(divList[i]);
+                                    }
+                                }
+                            }
+                            return elemWithClass;
                         }
                     },
 
