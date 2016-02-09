@@ -682,28 +682,34 @@
                                 var elDialogContent = getByClass($dialog, 'ngdialog-content');
                                 if (elHeader !== null && elDialogContent !== null) {
                                     var startX = 0, startY = 0;
-                                    var x = 0, y = 0;
+                                    var x = elDialogContent.css('top'), y = elDialogContent.css('left');
+                                    x = x.substring(0, x.length - 2);
+                                    y = y.substring(0, y.length - 2);                                    
                                     elHeader.css({
                                         cursor: 'move' //'pointer' 
                                     });
 
-                                    elHeader.on('mousedown', function (event) {                                       
+                                    elHeader.on('mousedown', function (event) {
+                                        console.log('x: ' + x + ' y: ' + y);
                                         startX = event.screenX - x;
                                         startY = event.screenY - y;
-                                        console.log(startX);
+                                        console.log('start x: ' + startX);
+                                        console.log(elDialogContent.css('top') + ':' + elDialogContent.css('left'));
+
+                                        //displayCoordinates(event);
+                                        //displayCoordinates(options.mouseEvent);
+
                                         $document.on('mousemove', mousemove);
                                         $document.on('mouseup', mouseup);
                                     });
 
                                     function mousemove(ev) {
-                                        console.log(startX);
                                         y = ev.screenY - startY;
                                         x = ev.screenX - startX;
                                         elDialogContent.css({
                                             top: y + 'px',
                                             left: x + 'px'
                                         });
-                                        //console.log(x + 'px');
                                         window.getSelection().removeAllRanges();
                                     }
 
@@ -725,6 +731,16 @@
                                 privateMethods.closeDialog($dialog, value);
                             }
                         };
+                        function displayCoordinates(e) {
+                            if (e != null) {                     
+                                console.log('screenX: ' + e.screenX + ' screenY: ' + e.screenY);
+                                console.log('clientX: ' + e.clientX + ' clientY: ' + e.clientY);
+                                console.log('layerX: ' + e.clientX + '  layerY: ' + e.clientY);
+                                console.log('offsetX: ' + e.offsetX + ' offsetY: ' + e.offsetY);
+                                console.log('pageX: ' + e.pageX + '     pageY: ' + e.pageY);
+                                console.log('x: ' + e.x + '             y: ' + e.y);                            
+                            }
+                        }
 
                         function loadTemplateUrl (tmpl, config) {
                             $rootScope.$broadcast('ngDialog.templateLoading', tmpl);
