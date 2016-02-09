@@ -682,7 +682,8 @@
                                 var elDialogContent = getByClass($dialog, 'ngdialog-content');
                                 if (elHeader !== null && elDialogContent !== null) {
                                     var startX = 0, startY = 0;
-                                    var x = elDialogContent.css('top'), y = elDialogContent.css('left');
+                                    var x = elDialogContent.css('left'), y = elDialogContent.css('top');
+                                    //var x =0, y = 0;
                                     x = x.substring(0, x.length - 2);
                                     y = y.substring(0, y.length - 2);                                    
                                     elHeader.css({
@@ -692,7 +693,7 @@
                                     elHeader.on('mousedown', function (event) {
                                         startX = event.screenX - x;
                                         startY = event.screenY - y;                                        
-                                        console.log('mouse down: x=' + x + ' y=' + y + ' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + event.screenX + ' ev.screenY=' + event.screenY);
+                                        console.log('mouse down: x=' + x + ' y=' + y + ' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + event.screenX + ' ev.screenY=' + event.screenY + ' ++');
                                         //displayCoordinates(event);
                                         //displayCoordinates(options.mouseEvent);
 
