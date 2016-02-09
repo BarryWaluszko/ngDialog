@@ -690,12 +690,9 @@
                                     });
 
                                     elHeader.on('mousedown', function (event) {
-                                        console.log('x: ' + x + ' y: ' + y);
                                         startX = event.screenX - x;
-                                        startY = event.screenY - y;
-                                        console.log('start x: ' + startX);
-                                        console.log(elDialogContent.css('top') + ':' + elDialogContent.css('left'));
-
+                                        startY = event.screenY - y;                                        
+                                        console.log('mouse down: x=' + x + ' y=' + y + ' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + event.screenX + ' ev.screenY=' + event.screenY);
                                         //displayCoordinates(event);
                                         //displayCoordinates(options.mouseEvent);
 
@@ -706,6 +703,8 @@
                                     function mousemove(ev) {
                                         y = ev.screenY - startY;
                                         x = ev.screenX - startX;
+                                        console.log('mouse move: x=' + x + ' y=' + y +' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + ev.screenX + ' ev.screenY=' + ev.screenY);
+
                                         elDialogContent.css({
                                             top: y + 'px',
                                             left: x + 'px'
