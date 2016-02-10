@@ -466,9 +466,9 @@
                      * - closeByEscape {Boolean} - default true
                      * - closeByDocument {Boolean} - default true
                      * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set)
-                     * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled)
                      * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
                      * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
+                     * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled), default false
                      * @return {Object} dialog
                      */
                     open: function (opts) {
@@ -682,9 +682,11 @@
                                 var elDialogContent = getByClass($dialog, 'ngdialog-content');
                                 if (elHeader !== null && elDialogContent !== null) {
                                     var startX = 0, startY = 0;
-                                    var x = elDialogContent.css('left'), y = elDialogContent.css('top');
-                                    x = x.substring(0, x.length - 2);
-                                    y = y.substring(0, y.length - 2);                                    
+                                    var x = elDialogContent.css('left');
+                                    var y = elDialogContent.css('top');
+                                    x = x.substring(0, x.length - 2); //remove the 'px' string from the coordinates
+                                    y = y.substring(0, y.length - 2);
+
                                     elHeader.css({
                                         cursor: 'move' //'pointer' 
                                     });
@@ -791,6 +793,7 @@
                      * - preCloseCallback {String|Function} - user supplied function name/function called before closing dialog (if set); not called on confirm
                      * - tooltip {Boolean} - if enabled ngDialog will be displayed as a tooltip. Left, top corner has the position where the cursor is. Default false
                      * - mouseEvent {event} - mouse event with coordinates to set up tooltip position
+                     * - draggable {Boolean} - move the ngDialog object by clicking on it's header with the mouse and dragging it anywhere within the viewport (if enabled), default false
                      *
                      * @return {Object} dialog
                      */
