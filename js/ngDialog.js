@@ -683,7 +683,6 @@
                                 if (elHeader !== null && elDialogContent !== null) {
                                     var startX = 0, startY = 0;
                                     var x = elDialogContent.css('left'), y = elDialogContent.css('top');
-                                    //var x =0, y = 0;
                                     x = x.substring(0, x.length - 2);
                                     y = y.substring(0, y.length - 2);                                    
                                     elHeader.css({
@@ -692,10 +691,7 @@
 
                                     elHeader.on('mousedown', function (event) {
                                         startX = event.screenX - x;
-                                        startY = event.screenY - y;                                        
-                                        console.log('mouse down: x=' + x + ' y=' + y + ' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + event.screenX + ' ev.screenY=' + event.screenY + ' ++');
-                                        //displayCoordinates(event);
-                                        //displayCoordinates(options.mouseEvent);
+                                        startY = event.screenY - y;                                                                                
 
                                         $document.on('mousemove', mousemove);
                                         $document.on('mouseup', mouseup);
@@ -703,8 +699,7 @@
 
                                     function mousemove(ev) {
                                         y = ev.screenY - startY;
-                                        x = ev.screenX - startX;
-                                        console.log('mouse move: x=' + x + ' y=' + y +' startX=' + startX + ' startY=' + startY + ' ev.screenX=' + ev.screenX + ' ev.screenY=' + ev.screenY);
+                                        x = ev.screenX - startX;                                       
 
                                         elDialogContent.css({
                                             top: y + 'px',
